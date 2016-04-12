@@ -433,7 +433,6 @@ export class BarChart extends React.Component<VisualizationProps, BarChartState>
           getY={getY}
           top={containerStage.y + topOffset}
           left={leftOffset}
-          openRawDataModal={openRawDataModal}
         />;
       }
     }
