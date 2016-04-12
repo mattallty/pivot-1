@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 import { Timezone } from 'chronoshift';
 import { $, PlywoodValue, Datum, TimeRange } from 'plywood';
 import { Fn } from "../../../common/utils/general/general";
-import { Stage, Clicker, Measure, Essence } from '../../../common/models/index';
+import { Stage, Clicker, Measure } from '../../../common/models/index';
 import { STRINGS } from '../../config/constants';
 import { clamp } from "../../utils/dom/dom";
 import { formatTimeRange, DisplayYear } from '../../utils/date/date';
@@ -28,7 +28,6 @@ export interface SegmentBubbleProps extends React.Props<any> {
   getY?: (d: Datum) => number;
   clicker?: Clicker;
   onClose?: Fn;
-  essence?: Essence;
   openRawDataModal?: Fn;
 }
 
