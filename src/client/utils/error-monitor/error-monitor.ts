@@ -1,16 +1,31 @@
+import * as Qajax from 'qajax';
+
 export function addErrorMonitor() {
   var originalOnError = window.onerror;
   window.onerror = (message, file, line, column, errorObject) => {
     column = column || (window.event && (window.event as any).errorCharacter);
     var stack = errorObject ? errorObject.stack : null;
+    var userAgent = navigator.userAgent;
 
     var err = {
       message,
       file,
       line,
       column,
-      stack
+      stack,
+      time: new Date().toISOString(),
+      userAgent
     };
+
+    Qajax({
+      method: "POST",
+      url: "/errors",
+      data: {
+        error: err
+      }
+    })
+      .then(Qajax.filterSuccess);
+
 
     if (typeof console !== "undefined") {
       console.log('An error has occurred. Please include the below information in the issue:');

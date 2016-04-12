@@ -20,6 +20,8 @@ import * as plywoodRoutes from './routes/plywood/plywood';
 import * as plyqlRoutes from './routes/plyql/plyql';
 import * as pivotRoutes from './routes/pivot/pivot';
 import * as healthRoutes from './routes/health/health';
+import * as errorsRoutes from './routes/errors/errors';
+
 import { errorLayout } from './views';
 
 var app = express();
@@ -70,6 +72,7 @@ if (SERVER_CONFIG.iframe === 'deny') {
 app.use('/', pivotRoutes);
 app.use('/pivot', pivotRoutes);
 app.use('/health', healthRoutes);
+app.use('/errors', errorsRoutes);
 
 // Easter egg ( https://groups.google.com/forum/#!topic/imply-user-group/Ogks7pAnd-A )
 app.get('/graph', (req: Request, res: Response, next: Function) => {
