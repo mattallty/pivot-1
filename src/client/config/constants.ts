@@ -54,6 +54,5 @@ export const STRINGS = {
   copySpecificUrl: 'Copy URL - fixed time',
   logout: 'Logout',
   infoAndFeedback: 'Info & Feedback',
-  copyValue: 'Copy value',
-  goToUrl: 'Go to URL'
+  copyValue: 'Copy value'
 };

@@ -404,9 +404,6 @@ export class BarChart extends React.Component<VisualizationProps, BarChartState>
       mySplitDataset.data.forEach((d) => {
         if (highlightBubble || !bubbleHighlightDelta.equals(getFilterFromDatum(splits, d))) return;
 
-        const url = essence.dataSource.getDimensionByExpression(splits.get(0).expression).url;
-        const urls = url ? [url] : [];
-
         var leftOffset = containerStage.x + VIS_H_PADDING + scaleX(d[SEGMENT]) + stepWidth / 2;
         var topOffset = chartStage.height * chartIndex - scrollTop + scaleY(getY(d)) + TEXT_SPACER - HOVER_BUBBLE_V_OFFSET;
         if (topOffset > 0) {
@@ -419,8 +416,6 @@ export class BarChart extends React.Component<VisualizationProps, BarChartState>
             top={containerStage.y + topOffset}
             left={leftOffset}
             clicker={clicker}
-
-            urls={urls}
           />;
         }
       });

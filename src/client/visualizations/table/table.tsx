@@ -414,11 +414,6 @@ export class Table extends React.Component<VisualizationProps, TableState> {
             top: rowY,
             left
           };
-
-          var dimensionUrls: string[] = splits.splitCombines.map((splitCombine) => {
-            var dimension = essence.dataSource.getDimensionByExpression(splitCombine.expression);
-            return dimension.url || null;
-          }).toArray();
           highlighter = <div className='highlighter' key='highlight' style={highlighterStyle}></div>;
 
           highlightBubble = <SegmentBubble
@@ -429,8 +424,6 @@ export class Table extends React.Component<VisualizationProps, TableState> {
             clicker={clicker}
             left={stage.x + stage.width / 2}
             top={stage.y + HEADER_HEIGHT + rowY - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
-
-            urls={dimensionUrls}
           />;
         }
 
