@@ -71,7 +71,7 @@ export class HilukMenu extends React.Component<HilukMenuProps, HilukMenuState> {
         onClick={onClose}
       >{STRINGS.copySpecificUrl}</li>);
     }
-    
+
     shareOptions.push(<li
       className="view-raw-data"
       key="view-raw-data"
