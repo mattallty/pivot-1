@@ -2,20 +2,24 @@ require('./download-button.css');
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import * as filesaver from 'browser-filesaver';
+
 import { $, Expression, Executor, Dataset, Set } from 'plywood';
 import { Stage, Clicker, Essence, DataSource, Filter, Dimension, Measure } from '../../../common/models/index';
 // import { ... } from '../../config/constants';
-import { SvgIcon } from '../svg-icon/svg-icon';
 import { STRINGS } from "../../config/constants";
 import { setToString } from "../../../common/utils/general/general";
 import { classNames } from "../../utils/dom/dom";
+import { SvgIcon } from '../svg-icon/svg-icon';
+import { Button, ButtonType } from '../button/button';
+
 
 // styled link, not button
 export type FileFormat = "csv" | "tsv" | "json" | "txt";
 
 export interface DownloadButtonProps extends React.Props<any> {
   dataset: Dataset;
-  className?: string;
+  type?: ButtonType;
   fileName?: string;
   fileFormat?: FileFormat;
 }
@@ -24,21 +28,35 @@ export interface DownloadButtonState {
 }
 
 export class DownloadButton extends React.Component<DownloadButtonProps, DownloadButtonState> {
-  static defaultFileFormat: FileFormat = 'csv';
+  static defaultFileFormat: FileFormat = 'tsv';
 
-  static renderDisabled(className?: string) {
-    const qualifiedClassName = classNames('download-button', className);
-    return <a className={qualifiedClassName}
-              title={STRINGS.download}
-              disabled={true}
-    >{STRINGS.download}</a>;
+  static renderDisabled(type: ButtonType) {
+    return <Button
+      type={type}
+      title={STRINGS.download}
+      active={false}
+    />;
   }
 
-  public mounted: boolean;
+  static getMIMEType(fileType: string) {
+    switch (fileType) {
+      case 'csv':
+        return 'text/csv';
+      case 'tsv':
+        return 'text/tsv';
+      default:
+        return 'application/json';
+    }
+  }
 
-  constructor() {
-    super();
-//    this.state = {};
+  downloadFile(): void {
+    const { fileFormat } = this.props;
+    var { fileName } = this.props;
+    const type = `${DownloadButton.getMIMEType(fileFormat)};charset=utf-8`;
+    const blob = new Blob([this.datasetToFileString()], {type});
+    if (!fileName) fileName = `${new Date()}-data`;
+    fileName += `.${fileFormat || 'json'}`;
+    filesaver.saveAs(blob, fileName);
   }
 
   datasetToFileString(): string {
@@ -48,6 +66,10 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
         formatter: {
           'SET/STRING': ((v: Set) => {
             return setToString(v, { encloseIn: ["\"[", "\"]"] });
+          }),
+          'STRING': ((v: string) => {
+            if (v) var noLineBreaks = v.replace(/(?:\r\n|\r|\n)/g, '');
+            return `"${noLineBreaks}"`;
           })
         }
       });
@@ -56,6 +78,10 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
         formatter: {
           'SET/STRING': ((v: Set) => {
             return setToString(v, { encloseIn: ["[", "]"] });
+          }),
+          'STRING': ((v: string) => {
+            if (v) var noLineBreaks = v.replace(/(?:\r\n|\r|\n)/g, '');
+            return noLineBreaks;
           })
         }
       });
@@ -65,18 +91,12 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
   }
 
   render() {
-    const { dataset, className, fileFormat } = this.props;
-    if (!dataset) return DownloadButton.renderDisabled(className);
-    var { fileName } = this.props;
-    const qualifiedClassName = classNames('download-button', className);
-    const buffer = this.datasetToFileString();
-    if (!fileName) fileName = `${new Date()}-data`;
-    fileName += `.${fileFormat || 'json'}`;
-    return <a className={qualifiedClassName}
-              href={`data:attachment/csv, ${encodeURIComponent(buffer)}`}
-              download={fileName}
-              target="_blank">
-      {STRINGS.download}
-    </a>;
+    const { dataset, type } = this.props;
+    if (!dataset) return DownloadButton.renderDisabled(type);
+    return <Button
+      type={type}
+      onClick={this.downloadFile.bind(this)}
+      title={STRINGS.download}
+      />;
   }
 }

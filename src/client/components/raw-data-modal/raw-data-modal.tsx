@@ -300,7 +300,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         <div className="button-bar">
           <Button type="primary" className="close" onClick={onClose} title={STRINGS.close}/>
           <DownloadButton
-            className="secondary"
+            type="secondary"
             fileName={this.makeFileName()}
             fileFormat={DownloadButton.defaultFileFormat}
             dataset={dataset}/>
