@@ -5,14 +5,14 @@ import { List } from 'immutable';
 import { $, Expression, Executor, Dataset, PlywoodValue, Datum, Set } from 'plywood';
 import { Essence, Stage, FilterClause, Dimension, Measure, DataSource } from '../../../common/models/index';
 
-import { Fn, makeTitle, hasOwnProperty, setToString } from "../../../common/utils/general/general";
+import { Fn, makeTitle, hasOwnProperty, setToString, arraySum } from "../../../common/utils/general/general";
 import { formatTimeRange, DisplayYear } from "../../utils/date/date";
 import { formatLabel } from "../../../common/utils/formatter/formatter";
 import { STRINGS, SEGMENT, SPLIT} from '../../config/constants';
 import { Modal } from '../modal/modal';
 import { Button } from '../button/button';
 import { DownloadButton } from '../download-button/download-button';
-import { ScrollContainer } from '../scroll-container/scroll-container';
+import { Scroller } from '../scroller/scroller';
 import { SvgIcon } from '../../components/svg-icon/svg-icon';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
 
@@ -254,14 +254,10 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const { dataset, loading, scrollTop, scrollLeft, error } = this.state;
     const headerColumns = this.renderHeader();
     const rows = this.renderRows(dataset, scrollTop, stage);
-    const dimensionsWidth = this.dimensionsWidths.reduce((pV: number, cV: number) => {
-      return pV + cV;
-    }, 0);
-    const measuresWidths = this.measuresWidths.reduce((pV: number, cV: number) => {
-      return pV + cV;
-    }, 0);
+    const dimensionsWidth = arraySum(this.dimensionsWidths);
+    const measuresWidths = arraySum(this.measuresWidths);
     const rowWidth = dimensionsWidth + measuresWidths;
-    const title = `${makeTitle(SEGMENT.toLowerCase())} ${STRINGS.rawData} `;
+    const title = `${makeTitle(SEGMENT.toLowerCase())} ${STRINGS.rawData}`;
     const dataLength = dataset ? dataset.data.length : 0;
     const bodyHeight = dataLength * SimpleTable.ROW_HEIGHT;
 
@@ -276,7 +272,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     </div>;
 
     const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth, bodyHeight);
-    const scrollContainer = <ScrollContainer style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
+    const scrollContainer = <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
     return <Modal
       className="raw-data-modal"
       title={title}

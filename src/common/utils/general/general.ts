@@ -124,5 +124,11 @@ export function setToString(set: Set, options?: { encloseIn?: string | string[]}
   } else {
     throw new Error('unsupported encloseIn, supply either a string or an array of length 2');
   }
-
 }
+
+export function arraySum(inputArray: number[]) {
+  return inputArray.reduce((pV: number, cV: number) => {
+    return pV + cV;
+  }, 0);
+}
+

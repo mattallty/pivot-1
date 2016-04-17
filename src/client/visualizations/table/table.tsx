@@ -11,7 +11,7 @@ import { SPLIT, SEGMENT, TIME_SEGMENT } from '../../config/constants';
 import { getXFromEvent, getYFromEvent } from '../../utils/dom/dom';
 import { SvgIcon } from '../../components/svg-icon/svg-icon';
 import { SegmentBubble } from '../../components/segment-bubble/segment-bubble';
-import { ScrollContainer } from '../../components/scroll-container/scroll-container';
+import { Scroller } from '../../components/scroller/scroller';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
 
 const SEGMENT_WIDTH = 300;
@@ -481,7 +481,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       <div className="vertical-scroll-shadow" style={verticalScrollShadowStyle}></div>
     </div>;
 
-    const scrollContainer = <ScrollContainer
+    const scrollContainer = <Scroller
       style={scrollerStyle}
       ref="base"
       onScroll={this.onScroll.bind(this)}

@@ -7,12 +7,12 @@ import '../../utils/require-extensions';
 import * as TestUtils from 'react-addons-test-utils';
 
 import { $, Expression } from 'plywood';
-import { ScrollContainer } from './scroll-container';
+import { Scroller } from './scroller';
 
-describe('ScrollContainer', () => {
+describe('Scroller', () => {
   it('adds the correct class', () => {
     var renderedComponent = TestUtils.renderIntoDocument(
-      <ScrollContainer
+      <Scroller
         ref="base"
         onScroll={() => {}}
       />
