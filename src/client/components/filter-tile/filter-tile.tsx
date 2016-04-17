@@ -9,9 +9,9 @@ import { STRINGS, BAR_TITLE_WIDTH, CORE_ITEM_WIDTH, CORE_ITEM_GAP } from '../../
 import { Stage, Clicker, Essence, DataSource, Filter, FilterClause, Dimension, Measure} from '../../../common/models/index';
 import { calculateDragPosition, DragPosition } from '../../../common/utils/general/general';
 import { formatTimeRange, DisplayYear } from '../../utils/date/date';
+import { formatLabel } from "../../../common/utils/formatter/formatter";
 import { findParentWithClass, setDragGhost, uniqueId, isInside, transformStyle, getXFromEvent } from '../../utils/dom/dom';
 import { DragManager } from '../../utils/drag-manager/drag-manager';
-import { setToString } from "../../../common/utils/general/general";
 
 import { SvgIcon } from '../svg-icon/svg-icon';
 import { FancyDragIndicator } from '../fancy-drag-indicator/fancy-drag-indicator';
@@ -26,45 +26,6 @@ export interface ItemBlank {
   dimension: Dimension;
   source: string;
   clause?: FilterClause;
-}
-
-export interface LabelFormatOptions {
-  dimension: Dimension;
-  clause: FilterClause;
-  essence: Essence;
-  verbose?: boolean;
-}
-
-export function formatLabel(options: LabelFormatOptions): string {
-  const { dimension, clause, essence, verbose } = options;
-  var label = dimension.title;
-
-  switch (dimension.kind) {
-    case 'boolean':
-    case 'number':
-    case 'string':
-      if (verbose) {
-        label += `: ${setToString(clause.getLiteralSet(), { encloseIn: "" })}`;
-      } else {
-        var setElements = clause.getLiteralSet().elements;
-        label += setElements.length > 1 ? ` (${setElements.length})` : `: ${setElements[0]}`;
-      }
-      break;
-    case 'time':
-      var timeSelection = clause.selection;
-      var timeRange = essence.evaluateSelection(timeSelection);
-      if (verbose) {
-        label = `Time: ${ formatTimeRange(timeRange, essence.timezone, DisplayYear.IF_DIFF) }`;
-      } else {
-        label = formatTimeRange(timeRange, essence.timezone, DisplayYear.IF_DIFF);
-      }
-      break;
-
-    default:
-      throw new Error(`unknown kind ${dimension.kind}`);
-  }
-
-  return label;
 }
 
 function formatLabelDummy(dimension: Dimension): string {

@@ -28,10 +28,10 @@ export class ScrollContainer extends React.Component<ScrollContainerProps, Scrol
     return <div
       className="scroll-container"
       ref="base"
-      onScroll={onScroll.bind(this)}
-      onMouseLeave={onMouseLeave ? onMouseLeave.bind(this) : null}
-      onMouseMove={onMouseMove ? onMouseMove.bind(this) : null}
-      onClick={onClick ? onClick.bind(this) : null}
+      onScroll={onScroll}
+      onMouseLeave={onMouseLeave || null}
+      onMouseMove={onMouseMove || null}
+      onClick={onClick || null}
     >
       <div className="scroller" style={style}></div>
     </div>;

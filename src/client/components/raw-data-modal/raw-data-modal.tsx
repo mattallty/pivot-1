@@ -1,4 +1,3 @@
-import {Manifest} from "../../../common/models/manifest/manifest";
 require('./raw-data-modal.css');
 
 import * as React from 'react';
@@ -8,8 +7,8 @@ import { Essence, Stage, FilterClause, Dimension, Measure, DataSource } from '..
 
 import { Fn, makeTitle, hasOwnProperty, setToString } from "../../../common/utils/general/general";
 import { formatTimeRange, DisplayYear } from "../../utils/date/date";
+import { formatLabel } from "../../../common/utils/formatter/formatter";
 import { STRINGS, SEGMENT, SPLIT} from '../../config/constants';
-import { formatLabel } from "../filter-tile/filter-tile";
 import { Modal } from '../modal/modal';
 import { Button } from '../button/button';
 import { DownloadButton } from '../download-button/download-button';
