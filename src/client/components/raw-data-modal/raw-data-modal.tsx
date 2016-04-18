@@ -2,7 +2,7 @@ require('./raw-data-modal.css');
 
 import * as React from 'react';
 import { List } from 'immutable';
-import { $, Expression, Executor, Dataset, PlywoodValue, Datum, Set } from 'plywood';
+import { $, Expression, Executor, Dataset, PlywoodValue, Datum, Set, AttributeInfo } from 'plywood';
 import { Essence, Stage, FilterClause, Dimension, Measure, DataSource } from '../../../common/models/index';
 
 import { Fn, makeTitle, hasOwnProperty, setToString, arraySum } from "../../../common/utils/general/general";
@@ -58,8 +58,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
   static id = 'raw-data-table';
 
   public mounted: boolean;
-  public dimensionsWidths: number[];
-  public measuresWidths: number[];
+  public attributesWidth: number[];
 
   constructor() {
     super();
@@ -70,8 +69,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
       scrollTop: 0,
       error: null
     };
-    this.dimensionsWidths = [];
-    this.measuresWidths = [];
+
+    this.attributesWidth = [];
   }
 
   componentDidMount() {
@@ -135,11 +134,11 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     return filters.toList();
   }
 
-  renderHeader(): JSX.Element[] {
+  renderHeader(dataset: Dataset): JSX.Element[] {
+    if (!dataset) return null;
     const { essence } = this.props;
     const { dataSource } = essence;
-    const dimensions = dataSource.dimensions;
-    const measures = dataSource.measures;
+    const attributes = dataset.attributes;
     const timeAttribute: string = dataSource.timeAttribute.name;
     const timeColStyle = { width: TIME_COL_WIDTH };
     var cols = [ <div className={thClassName} style={timeColStyle} key="time">
@@ -147,32 +146,20 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         {makeTitle(timeAttribute)}
       </span>
     </div> ];
-    this.dimensionsWidths = [TIME_COL_WIDTH];
-    dimensions.map((dimension, i) => {
-      if (dimension.name === timeAttribute) return;
-      const width = getColumnWidth(dimension.kind);
+    this.attributesWidth = [TIME_COL_WIDTH];
+    attributes.map((attribute, i) => {
+      const name = attribute.name;
+      if (name === timeAttribute) return;
+      const width = getColumnWidth(attribute.type);
       const style = { width };
-      const key = dimension.title;
-      this.dimensionsWidths = this.dimensionsWidths.concat(width);
+      const key = name;
+      this.attributesWidth = this.attributesWidth.concat(width);
       cols = cols.concat(<div className={thClassName} style={style} key={i}>
         <div className={thText}>
-          {key}
+          {makeTitle(key)}
         </div>
       </div>);
     });
-
-    this.measuresWidths = [];
-    measures.map((measure, i) => {
-      const width = NUMBER_COL_WIDTH;
-      const colStyle = { width };
-      this.measuresWidths = this.measuresWidths.concat(width);
-      cols = cols.concat(<div className={thClassName} style={colStyle} key={`${measure.name}${i}`}>
-        <div className={thText}>
-          {makeTitle(measure.name)}
-        </div>
-      </div>);
-    });
-
     return cols;
   }
 
@@ -183,8 +170,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const rawData = dataset.data;
     const firstElementToShow = SimpleTable.getFirstElementToShow(scrollTop);
     const lastElementToShow = SimpleTable.getLastElementToShow(rawData.length, scrollTop, stage.height);
-    const dimensions = dataSource.dimensions;
-    const measures = dataSource.measures;
+    const attributes = dataset.attributes;
     const timeAttribute: string = dataSource.timeAttribute.name;
     const rows = rawData.slice(firstElementToShow, lastElementToShow);
     var rowY = firstElementToShow * SimpleTable.ROW_HEIGHT;
@@ -195,12 +181,14 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
           { `${new Date(datum[timeAttribute].toString()).toISOString()}` }
         </span>
       </div> ];
-      dimensions.map((dimension: Dimension, colNumber: number) => {
-        if (dimension.name === timeAttribute) return;
+
+      attributes.map((attribute: AttributeInfo, colNumber: number) => {
+        const name = attribute.name;
+        if (name === timeAttribute) return;
         const colStyle = {
-          width: this.dimensionsWidths[colNumber]
+          width: this.attributesWidth[colNumber]
         };
-        const key = dimension.name;
+        const key = name;
         const value: PlywoodValue = datum[key];
         var displayValue = value;
 
@@ -214,19 +202,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
           </span>
         </div>);
       });
-      measures.map((measure: Measure, colNumber: number) => {
-        const colStyle = {
-          width: this.measuresWidths[colNumber]
-        };
-        const key = measure.name.toLowerCase();
-        cols = cols.concat(<div className={tdClassName} key={key} style={colStyle}>
-          <span className={tdText}>
-            {`${datum[key]}`}
-          </span>
-        </div>);
-      });
 
-      const rowStyle = { top: rowY };
+    const rowStyle = { top: rowY };
       rowY += SimpleTable.ROW_HEIGHT;
       return <div className={rowClassName} style={rowStyle} key={i}>{cols}</div>;
     });
@@ -252,11 +229,9 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
   render() {
     const { onClose, stage } = this.props;
     const { dataset, loading, scrollTop, scrollLeft, error } = this.state;
-    const headerColumns = this.renderHeader();
+    const headerColumns = this.renderHeader(dataset);
     const rows = this.renderRows(dataset, scrollTop, stage);
-    const dimensionsWidth = arraySum(this.dimensionsWidths);
-    const measuresWidths = arraySum(this.measuresWidths);
-    const rowWidth = dimensionsWidth + measuresWidths;
+    const rowWidth = arraySum(this.attributesWidth);
     const title = `${makeTitle(SEGMENT.toLowerCase())} ${STRINGS.rawData}`;
     const dataLength = dataset ? dataset.data.length : 0;
     const bodyHeight = dataLength * SimpleTable.ROW_HEIGHT;

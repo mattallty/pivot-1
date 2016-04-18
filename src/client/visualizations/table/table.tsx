@@ -473,6 +473,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
         left={stage.x + stage.width / 2}
         top={stage.y + SimpleTable.HEADER_HEIGHT + highlighterStyle.top - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
         openRawDataModal={openRawDataModal}
+        urls={dimensionUrls}
       />;
     }
     const preRows = <div className="segments-cont">

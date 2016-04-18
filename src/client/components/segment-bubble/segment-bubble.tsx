@@ -135,6 +135,7 @@ export class SegmentBubble extends React.Component<SegmentBubbleProps, SegmentBu
     }
 
     bubbleListItems.push(<li
+        key="view-raw-data"
         className="view-raw-data"
         data-clipboard-text={label}
         onClick={this.openRawDataModal.bind(this)}

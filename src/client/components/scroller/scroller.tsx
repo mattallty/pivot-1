@@ -19,9 +19,19 @@ export interface ScrollerProps extends React.Props<any> {
 }
 
 export interface ScrollerState {
+  scrollLeft: number;
+  scrollTop: number;
 }
 
 export class Scroller extends React.Component<ScrollerProps, ScrollerState> {
+
+  constructor() {
+    super();
+    this.state = {
+      scrollLeft: 0,
+      scrollTop: 0
+    };
+  }
 
   render() {
     const { style, onScroll, onMouseLeave, onMouseMove, onClick } = this.props;
