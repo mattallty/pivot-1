@@ -225,7 +225,6 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     return `${dsName}-${visType}-${wordsOnly}`;
   }
 
-
   render() {
     const { onClose, stage } = this.props;
     const { dataset, loading, scrollTop, scrollLeft, error } = this.state;
@@ -236,7 +235,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const dataLength = dataset ? dataset.data.length : 0;
     const bodyHeight = dataLength * ROW_HEIGHT;
 
-    var horizontalScrollShadowStyle: any = { display: 'none' };
+    var horizontalScrollShadowStyle: InlineStyle = { display: 'none' };
     if (scrollTop) {
       horizontalScrollShadowStyle = {
         width: rowWidth - scrollLeft
@@ -248,6 +247,16 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
 
     const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth, bodyHeight);
     const scrollContainer = <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
+    var downloadButton: JSX.Element = null;
+    const showDownload = true;
+    if (showDownload) {
+      downloadButton = <DownloadButton
+        type="secondary"
+        fileName={this.makeFileName()}
+        fileFormat={DownloadButton.defaultFileFormat}
+        dataset={dataset}/>;
+    }
+
     return <Modal
       className="raw-data-modal"
       title={title}
@@ -270,11 +279,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         />
         <div className="button-bar">
           <Button type="primary" className="close" onClick={onClose} title={STRINGS.close}/>
-          <DownloadButton
-            type="secondary"
-            fileName={this.makeFileName()}
-            fileFormat={DownloadButton.defaultFileFormat}
-            dataset={dataset}/>
+          { downloadButton }
         </div>
       </div>
     </Modal>;

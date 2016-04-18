@@ -17,6 +17,7 @@ export interface InlineStyle {
   top?: number;
   width?: number;
   height?: number;
+  display?: string;
 }
 
 export interface SimpleTableProps extends React.Props<any> {

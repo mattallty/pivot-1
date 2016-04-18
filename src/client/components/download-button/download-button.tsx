@@ -6,7 +6,6 @@ import * as filesaver from 'browser-filesaver';
 
 import { $, Expression, Executor, Dataset, Set } from 'plywood';
 import { Stage, Clicker, Essence, DataSource, Filter, Dimension, Measure } from '../../../common/models/index';
-// import { ... } from '../../config/constants';
 import { STRINGS } from "../../config/constants";
 import { setToString } from "../../../common/utils/general/general";
 import { classNames } from "../../utils/dom/dom";
@@ -14,7 +13,6 @@ import { SvgIcon } from '../svg-icon/svg-icon';
 import { Button, ButtonType } from '../button/button';
 
 
-// styled link, not button
 export type FileFormat = "csv" | "tsv" | "json" | "txt";
 
 export interface DownloadButtonProps extends React.Props<any> {
@@ -97,6 +95,6 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
       type={type}
       onClick={this.downloadFile.bind(this)}
       title={STRINGS.download}
-      />;
+    />;
   }
 }
