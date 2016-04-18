@@ -16,7 +16,7 @@ import { Scroller } from '../scroller/scroller';
 import { SvgIcon } from '../../components/svg-icon/svg-icon';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
 
-
+const ROW_HEIGHT = 30;
 const LIMIT = 100;
 const TIME_COL_WIDTH = 170;
 const BOOLEAN_COL_WIDTH = 50;
@@ -168,12 +168,12 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const { essence } = this.props;
     const { dataSource } = essence;
     const rawData = dataset.data;
-    const firstElementToShow = SimpleTable.getFirstElementToShow(scrollTop);
-    const lastElementToShow = SimpleTable.getLastElementToShow(rawData.length, scrollTop, stage.height);
+    const firstElementToShow = SimpleTable.getFirstElementToShow(ROW_HEIGHT, scrollTop);
+    const lastElementToShow = SimpleTable.getLastElementToShow(ROW_HEIGHT, rawData.length, scrollTop, stage.height);
     const attributes = dataset.attributes;
     const timeAttribute: string = dataSource.timeAttribute.name;
     const rows = rawData.slice(firstElementToShow, lastElementToShow);
-    var rowY = firstElementToShow * SimpleTable.ROW_HEIGHT;
+    var rowY = firstElementToShow * ROW_HEIGHT;
     return rows.map((datum: Datum, i: number) => {
       const colStyle = { width: TIME_COL_WIDTH };
       var cols = [ <div className={tdClassName} key="time" style={colStyle}>
@@ -203,8 +203,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         </div>);
       });
 
-    const rowStyle = { top: rowY };
-      rowY += SimpleTable.ROW_HEIGHT;
+      const rowStyle = { top: rowY };
+      rowY += ROW_HEIGHT;
       return <div className={rowClassName} style={rowStyle} key={i}>{cols}</div>;
     });
   }
@@ -234,7 +234,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const rowWidth = arraySum(this.attributesWidth);
     const title = `${makeTitle(SEGMENT.toLowerCase())} ${STRINGS.rawData}`;
     const dataLength = dataset ? dataset.data.length : 0;
-    const bodyHeight = dataLength * SimpleTable.ROW_HEIGHT;
+    const bodyHeight = dataLength * ROW_HEIGHT;
 
     var horizontalScrollShadowStyle: any = { display: 'none' };
     if (scrollTop) {
@@ -258,6 +258,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         <SimpleTable
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
+          rowHeight={ROW_HEIGHT}
           loading={loading}
           error={error}
           headerColumns={headerColumns}

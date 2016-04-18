@@ -20,6 +20,7 @@ describe('SimpleTable', () => {
         headerColumns={null}
         rows={null}
         dataLength={30}
+        rowHeight={30}
       />
     );
 

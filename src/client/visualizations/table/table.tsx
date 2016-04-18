@@ -14,6 +14,7 @@ import { SegmentBubble } from '../../components/segment-bubble/segment-bubble';
 import { Scroller } from '../../components/scroller/scroller';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
 
+const ROW_HEIGHT = 30;
 const SEGMENT_WIDTH = 300;
 const INDENT_WIDTH = 25;
 const MEASURE_WIDTH = 100;
@@ -253,7 +254,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
     }
 
     y = y - SimpleTable.HEADER_HEIGHT + scrollTop;
-    var rowIndex = Math.floor(y / SimpleTable.ROW_HEIGHT);
+    var rowIndex = Math.floor(y / ROW_HEIGHT);
     var datum = flatData ? flatData[rowIndex] : null;
     if (!datum) return { what: 'whitespace' };
     return { what: 'row', row: datum };
@@ -364,10 +365,10 @@ export class Table extends React.Component<VisualizationProps, TableState> {
         highlightDelta = essence.highlight.delta;
       }
 
-      const skipNumber = SimpleTable.getFirstElementToShow(scrollTop);
-      const lastElementToShow = SimpleTable.getLastElementToShow(flatData.length, scrollTop, stage.height);
+      const skipNumber = SimpleTable.getFirstElementToShow(ROW_HEIGHT, scrollTop);
+      const lastElementToShow = SimpleTable.getLastElementToShow(ROW_HEIGHT, flatData.length, scrollTop, stage.height);
 
-      var rowY = skipNumber * SimpleTable.ROW_HEIGHT;
+      var rowY = skipNumber * ROW_HEIGHT;
       for (var i = skipNumber; i < lastElementToShow; i++) {
         var d = flatData[i];
         var nest = d['__nest'];
@@ -427,7 +428,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
           />;
         }
 
-        rowY += SimpleTable.ROW_HEIGHT;
+        rowY += ROW_HEIGHT;
       }
     }
 
@@ -446,7 +447,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       top: -scrollTop
     };
 
-    const bodyHeight = flatData ? flatData.length * SimpleTable.ROW_HEIGHT : 0;
+    const bodyHeight = flatData ? flatData.length * ROW_HEIGHT : 0;
 
     const highlightStyle = {
       top: -scrollTop
@@ -505,6 +506,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       <SimpleTable
         scrollLeft={scrollLeft}
         scrollTop={scrollTop}
+        rowHeight={ROW_HEIGHT}
         dataLength={flatData ? flatData.length : 0}
         headerColumns={headerColumns}
         rowWidth={rowWidthExtended}

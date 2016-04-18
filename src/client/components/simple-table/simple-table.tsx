@@ -22,6 +22,7 @@ export interface InlineStyle {
 export interface SimpleTableProps extends React.Props<any> {
   scrollLeft: number;
   scrollTop: number;
+  rowHeight: number;
   headerColumns: JSX.Element[];
   rowWidth?: number;
   preRows?: JSX.Element;
@@ -39,19 +40,18 @@ export interface SimpleTableState {
 
 export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableState> {
   static HEADER_HEIGHT = 38;
-  static ROW_HEIGHT = 30;
   static SPACE_LEFT = 10;
   static SPACE_RIGHT = 10;
 
   static ROW_PADDING_RIGHT = 50;
   static BODY_PADDING_BOTTOM = 90;
 
-  static getFirstElementToShow(scrollTop: number) {
-    return Math.max(0, Math.floor(scrollTop / SimpleTable.ROW_HEIGHT));
+  static getFirstElementToShow( rowHeight: number, scrollTop: number) {
+    return Math.max(0, Math.floor(scrollTop / rowHeight));
   }
 
-  static getLastElementToShow(datasetLength: number, scrollTop: number, visibleHeight: number) {
-    return Math.min(datasetLength, Math.ceil((scrollTop + visibleHeight) / SimpleTable.ROW_HEIGHT));
+  static getLastElementToShow(rowHeight: number, datasetLength: number, scrollTop: number, visibleHeight: number) {
+    return Math.min(datasetLength, Math.ceil((scrollTop + visibleHeight) / rowHeight));
   }
 
   static getRowStyle(topValue: number): InlineStyle {
@@ -76,12 +76,12 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
   }
 
   getBodyStyle(): InlineStyle {
-    const { scrollLeft, scrollTop, rowWidth, dataLength} = this.props;
+    const { scrollLeft, scrollTop, rowWidth, dataLength, rowHeight } = this.props;
     return {
       left: -scrollLeft,
       top: -scrollTop,
       width: rowWidth,
-      height: dataLength * SimpleTable.ROW_HEIGHT
+      height: dataLength * rowHeight
     };
   }
 
