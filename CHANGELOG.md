@@ -2,6 +2,27 @@
 
 For updates follow [@implydata](https://twitter.com/implydata) on Twitter.
 
+## 0.8.11
+
+- New Plywood fixes introspection of [JS ingestion aggregates](https://groups.google.com/forum/#!topic/imply-user-group/lC68IA79hYg) 
+
+## 0.8.10
+
+- 'Goto Url' option added
+
+## 0.8.9
+
+- New plywood fixes startup [bug](https://github.com/implydata/pivot/issues/150).
+
+## 0.8.8
+
+- Re-releasing
+
+## 0.8.7
+
+- New plywood fixes `timeFloor`, allows select sorting
+- Fixed broken travis tests being merged in 
+
 ## 0.8.6
 
 - New plywood

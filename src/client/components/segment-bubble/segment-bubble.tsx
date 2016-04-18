@@ -4,7 +4,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Timezone } from 'chronoshift';
 import { $, PlywoodValue, Datum, TimeRange } from 'plywood';
-import { Fn } from "../../../common/utils/general/general";
+import { Fn, hasOwnProperty} from "../../../common/utils/general/general";
 import { Stage, Clicker, Measure } from '../../../common/models/index';
 import { STRINGS } from '../../config/constants';
 import { clamp } from "../../utils/dom/dom";
@@ -29,6 +29,7 @@ export interface SegmentBubbleProps extends React.Props<any> {
   clicker?: Clicker;
   onClose?: Fn;
   openRawDataModal?: Fn;
+  urls?: string[];
 }
 
 export interface SegmentBubbleState {
@@ -88,13 +89,57 @@ export class SegmentBubble extends React.Component<SegmentBubbleProps, SegmentBu
     openRawDataModal();
   }
 
+  getReplacedUrl(label: string) {
+    var { urls, datum } = this.props;
+    var idx = 0;
+    if (urls.length !== 1) {
+      const nestIndex = (datum['__nest'] as number) - 1;
+      idx = nestIndex;
+    }
+    var url = urls[idx];
+    return url.replace(/%s/g, label);
+  }
+
+  getHasUrl() {
+    const { urls, datum } = this.props;
+    var index = 0;
+    if (hasOwnProperty(datum, '__nest')) index = datum['__nest'] as number - 1;
+    return Boolean(urls[index]);
+  }
+
+
   renderMoreMenu() {
     const { moreMenuOpenOn } = this.state;
     if (!moreMenuOpenOn) return null;
-
     var menuSize = Stage.fromSize(160, 160);
     var label = this.getLabel();
 
+    const bubbleListItems = [
+      <li
+        key="copyValue"
+        className="clipboard"
+        data-clipboard-text={label}
+        onClick={this.closeMoreMenu.bind(this)}
+      >{STRINGS.copyValue}</li>
+    ];
+
+    if (this.getHasUrl()) {
+      bubbleListItems.push(
+        <li
+          key="goToUrl"
+        > <a href={this.getReplacedUrl(label)} onClick={this.closeMoreMenu.bind(this)} target="_blank" >
+          {STRINGS.goToUrl}
+          </a>
+        </li>
+      );
+    }
+
+    bubbleListItems.push(<li
+        className="view-raw-data"
+        data-clipboard-text={label}
+        onClick={this.openRawDataModal.bind(this)}
+      >{STRINGS.viewRawData}</li>
+    );
     return <BubbleMenu
       className="more-menu"
       direction="down"
@@ -104,16 +149,7 @@ export class SegmentBubble extends React.Component<SegmentBubbleProps, SegmentBu
       onClose={this.closeMoreMenu.bind(this)}
     >
       <ul className="bubble-list">
-        <li
-          className="clipboard"
-          data-clipboard-text={label}
-          onClick={this.closeMoreMenu.bind(this)}
-        >{STRINGS.copyValue}</li>
-        <li
-          className="view-raw-data"
-          data-clipboard-text={label}
-          onClick={this.openRawDataModal.bind(this)}
-        >{STRINGS.viewRawData}</li>
+        { bubbleListItems }
       </ul>
     </BubbleMenu>;
   }
