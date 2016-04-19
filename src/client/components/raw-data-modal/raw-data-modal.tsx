@@ -256,7 +256,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     if (showDownload) {
       const type: ButtonType = "secondary";
       if (queryError || loader) {
-        DownloadButton.renderDisabled(type);
+        downloadButton = DownloadButton.renderDisabled(type);
       } else {
         downloadButton = <DownloadButton
         type={type}
@@ -273,16 +273,18 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     >
       <div className="content">
         <ul className="filters">{this.renderFilters()}</ul>
-        <SimpleTable
-          scrollLeft={scrollLeft}
-          scrollTop={scrollTop}
-          rowHeight={ROW_HEIGHT}
-          headerColumns={headerColumns}
-          rowWidth={rowWidth}
-          rows={rows}
-          dataLength={dataLength}
-        />
-        <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)} />;
+        <div className="table-container">
+          <SimpleTable
+            scrollLeft={scrollLeft}
+            scrollTop={scrollTop}
+            rowHeight={ROW_HEIGHT}
+            headerColumns={headerColumns}
+            rowWidth={rowWidth}
+            rows={rows}
+            dataLength={dataLength}
+          />
+          <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)} />
+        </div>
         {queryError}
         {loader}
         <div className="button-bar">
