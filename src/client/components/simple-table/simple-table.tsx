@@ -25,13 +25,13 @@ export interface SimpleTableProps extends React.Props<any> {
   scrollTop: number;
   rowHeight: number;
   headerColumns: JSX.Element[];
-  rowWidth?: number;
-  preRows?: JSX.Element;
   dataLength: number;
   rows: JSX.Element[];
+  rowWidth: number;
+  scrollContainer: JSX.Element;
+  preRows?: JSX.Element;
   rowLeftOffset?: number;
   postRows?: JSX.Element;
-  scrollContainer?: JSX.Element;
 }
 
 export interface SimpleTableState {

@@ -17,6 +17,8 @@ describe('SimpleTable', () => {
         scrollTop={3}
         headerColumns={null}
         rows={null}
+        rowWidth={100}
+        scrollContainer={null}
         dataLength={30}
         rowHeight={30}
       />
