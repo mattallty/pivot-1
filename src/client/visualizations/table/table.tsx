@@ -460,13 +460,6 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       top: -scrollTop
     };
 
-    var horizontalScrollShadowStyle: any = { display: 'none' };
-    if (scrollTop) {
-      horizontalScrollShadowStyle = {
-        width: SEGMENT_WIDTH + rowWidthExtended - scrollLeft
-      };
-    }
-
     var verticalScrollShadowStyle: any = { display: 'none' };
     if (scrollLeft) {
       verticalScrollShadowStyle = {};
@@ -482,7 +475,10 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       queryError = <QueryError error={error}/>;
     }
 
-    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth + SEGMENT_WIDTH, bodyHeight, SPACE_LEFT, HEADER_HEIGHT, SPACE_RIGHT, BODY_PADDING_BOTTOM);
+    const scrollerStyle = {
+      width: SPACE_LEFT + SEGMENT_WIDTH + rowWidth + SPACE_RIGHT,
+      height: HEADER_HEIGHT + bodyHeight + BODY_PADDING_BOTTOM
+    };
 
     var highlightBubble: JSX.Element = null;
     if (highlighter) {
@@ -502,7 +498,6 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       <div className="highlight-cont">
         <div className="highlight" style={highlightStyle}>{highlighter}</div>
       </div>
-      <div className="horizontal-scroll-shadow" style={horizontalScrollShadowStyle}></div>
       <div className="vertical-scroll-shadow" style={verticalScrollShadowStyle}></div>
       {queryError}
       {loader}
@@ -531,10 +526,9 @@ export class Table extends React.Component<VisualizationProps, TableState> {
         rowWidth={rowWidthExtended}
         preRows={preRows}
         rows={rows}
+        rowLeftOffset={SEGMENT_WIDTH}
         postRows={postRows}
         scrollContainer={scrollContainer}
-        loading={loading}
-        error={error}
       />
 
       {highlightBubble}

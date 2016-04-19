@@ -29,10 +29,9 @@ export interface SimpleTableProps extends React.Props<any> {
   preRows?: JSX.Element;
   dataLength: number;
   rows: JSX.Element[];
+  rowLeftOffset?: number;
   postRows?: JSX.Element;
   scrollContainer?: JSX.Element;
-  loading: boolean;
-  error: Error;
 }
 
 export interface SimpleTableState {
@@ -54,13 +53,6 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
     };
   }
 
-  static getScrollerStyle(rowWidth: number, bodyHeight: number, spaceLeft: number, headerHeight: number, spaceRight: number, bodyPaddingBottom: number): InlineStyle {
-    return {
-      width: spaceLeft + rowWidth + spaceRight,
-      height: headerHeight + bodyHeight + bodyPaddingBottom
-    };
-  }
-
   getHeaderStyle(): InlineStyle {
     const { scrollLeft, rowWidth } = this.props;
     return {
@@ -79,8 +71,21 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
     };
   }
 
+  getHorizontalShadowStyle(): InlineStyle {
+    const { rowLeftOffset, rowWidth, scrollTop, scrollLeft } = this.props;
+    var horizontalScrollShadowStyle: React.CSSProperties = { display: 'none' };
+    if (scrollTop) {
+      horizontalScrollShadowStyle = {
+        width: (rowLeftOffset || 0) + rowWidth - scrollLeft
+      };
+    }
+
+    return horizontalScrollShadowStyle;
+  }
+
   render() {
-    var { headerColumns, preRows, rows, postRows, loading, error, scrollContainer  } = this.props;
+    var { headerColumns, preRows, rows, postRows, scrollContainer  } = this.props;
+
     return <div className="simple-table">
       <div className="header-cont">
         <div className="header" style={this.getHeaderStyle()}>{headerColumns}</div>
@@ -90,6 +95,7 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
         <div className="body" style={this.getBodyStyle()}>{rows}</div>
       </div>
       { postRows }
+      <div className="horizontal-scroll-shadow" style={this.getHorizontalShadowStyle()}></div>
       { scrollContainer }
     </div>;
   }

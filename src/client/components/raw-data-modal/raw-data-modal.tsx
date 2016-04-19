@@ -253,13 +253,11 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
       queryError = <QueryError error={error}/>;
     }
 
-    const postRows = <div className="post-body">
-      {queryError}
-      {loader}
-      <div className="horizontal-scroll-shadow" style={horizontalScrollShadowStyle}></div>
-    </div>;
+    const scrollerStyle = {
+      width: SPACE_LEFT + rowWidth + SPACE_RIGHT,
+      height: HEADER_HEIGHT + bodyHeight + BODY_PADDING_BOTTOM
+    };
 
-    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth, bodyHeight, SPACE_LEFT, HEADER_HEIGHT, SPACE_RIGHT, BODY_PADDING_BOTTOM);
     const scrollContainer = <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
     var downloadButton: JSX.Element = null;
     const showDownload = true;
@@ -282,15 +280,14 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
           scrollLeft={scrollLeft}
           scrollTop={scrollTop}
           rowHeight={ROW_HEIGHT}
-          loading={loading}
-          error={error}
           headerColumns={headerColumns}
           rowWidth={rowWidth}
           rows={rows}
-          postRows={postRows}
           scrollContainer={error ? null : scrollContainer}
           dataLength={dataLength}
         />
+        {queryError}
+        {loader}
         <div className="button-bar">
           <Button type="primary" className="close" onClick={onClose} title={STRINGS.close}/>
           { downloadButton }

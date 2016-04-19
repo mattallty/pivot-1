@@ -65,14 +65,15 @@
     }
   }
 
+  .horizontal-scroll-shadow {
+    position: absolute;
+    top: 0;
+    height: $table-header-height;
+    box-shadow: 0 4px 4px -3px hsla(0, 0, 0, 0.2);
+  }
+
   .post-body {
     @include pin-full;
 
-    .horizontal-scroll-shadow {
-      position: absolute;
-      top: 0;
-      height: $table-header-height;
-      box-shadow: 0 4px 4px -3px hsla(0, 0, 0, 0.2);
-    }
   }
 }

@@ -13,8 +13,6 @@ describe('SimpleTable', () => {
   it('adds the correct class', () => {
     var renderedComponent = TestUtils.renderIntoDocument(
       <SimpleTable
-        error={new Error()}
-        loading={false}
         scrollLeft={2}
         scrollTop={3}
         headerColumns={null}
