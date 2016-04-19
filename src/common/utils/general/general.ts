@@ -132,3 +132,7 @@ export function arraySum(inputArray: number[]) {
   }, 0);
 }
 
+export function removeLineBreaks(input: string) {
+  if (!input) return null;
+  return input.replace(/(?:\r\n|\r|\n)/g, '');
+}

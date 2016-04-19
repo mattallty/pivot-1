@@ -7,7 +7,7 @@ import * as filesaver from 'browser-filesaver';
 import { $, Expression, Executor, Dataset, Set } from 'plywood';
 import { Stage, Clicker, Essence, DataSource, Filter, Dimension, Measure } from '../../../common/models/index';
 import { STRINGS } from "../../config/constants";
-import { setToString } from "../../../common/utils/general/general";
+import { setToString, removeLineBreaks } from "../../../common/utils/general/general";
 import { classNames } from "../../utils/dom/dom";
 import { SvgIcon } from '../svg-icon/svg-icon';
 import { Button, ButtonType } from '../button/button';
@@ -66,8 +66,7 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
             return setToString(v, { encloseIn: ["\"[", "\"]"] });
           }),
           'STRING': ((v: string) => {
-            if (v) var noLineBreaks = v.replace(/(?:\r\n|\r|\n)/g, '');
-            return `"${noLineBreaks}"`;
+            return `"${removeLineBreaks(v)}"`;
           })
         }
       });
@@ -78,8 +77,7 @@ export class DownloadButton extends React.Component<DownloadButtonProps, Downloa
             return setToString(v, { encloseIn: ["[", "]"] });
           }),
           'STRING': ((v: string) => {
-            if (v) var noLineBreaks = v.replace(/(?:\r\n|\r|\n)/g, '');
-            return noLineBreaks;
+            return removeLineBreaks(v);
           })
         }
       });

@@ -289,7 +289,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         {queryError}
         {loader}
         <div className="button-bar">
-          <Button type="primary" className="close" onClick={onClose} title={STRINGS.close}/>
+          <Button type="primary" className="close" active={!queryError && !loader} onClick={onClose} title={STRINGS.close}/>
           { downloadButton }
         </div>
       </div>
