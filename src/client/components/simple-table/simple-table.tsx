@@ -40,13 +40,6 @@ export interface SimpleTableState {
 }
 
 export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableState> {
-  static HEADER_HEIGHT = 38;
-  static SPACE_LEFT = 10;
-  static SPACE_RIGHT = 10;
-
-  static ROW_PADDING_RIGHT = 50;
-  static BODY_PADDING_BOTTOM = 90;
-
   static getFirstElementToShow( rowHeight: number, scrollTop: number) {
     return Math.max(0, Math.floor(scrollTop / rowHeight));
   }
@@ -61,10 +54,10 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
     };
   }
 
-  static getScrollerStyle(rowWidth: number, bodyHeight: number): InlineStyle {
+  static getScrollerStyle(rowWidth: number, bodyHeight: number, spaceLeft: number, headerHeight: number, spaceRight: number, bodyPaddingBottom: number): InlineStyle {
     return {
-      width: SimpleTable.SPACE_LEFT + rowWidth + SimpleTable.SPACE_RIGHT,
-      height: SimpleTable.HEADER_HEIGHT + bodyHeight + SimpleTable.BODY_PADDING_BOTTOM
+      width: spaceLeft + rowWidth + spaceRight,
+      height: headerHeight + bodyHeight + bodyPaddingBottom
     };
   }
 
@@ -88,16 +81,6 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
 
   render() {
     var { headerColumns, preRows, rows, postRows, loading, error, scrollContainer  } = this.props;
-    var loader: JSX.Element = null;
-    if (loading) {
-      loader = <Loader/>;
-    }
-
-    var queryError: JSX.Element = null;
-    if (error) {
-      queryError = <QueryError error={error}/>;
-    }
-
     return <div className="simple-table">
       <div className="header-cont">
         <div className="header" style={this.getHeaderStyle()}>{headerColumns}</div>
@@ -108,8 +91,6 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
       </div>
       { postRows }
       { scrollContainer }
-      { queryError }
-      { loader }
     </div>;
   }
 }

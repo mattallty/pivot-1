@@ -26,6 +26,7 @@
     }
 
     .simple-table {
+
       position: absolute;
       top: $control-height + 10;
       bottom: $control-height + $modal-window-padding + $padding;
@@ -51,6 +52,11 @@
           padding-right: $padding;
         }
       }
+    }
+
+    .loader,
+    .query-error {
+      @include pin-full;
     }
 
     .button-bar {

@@ -14,19 +14,20 @@ import { Button } from '../button/button';
 import { DownloadButton } from '../download-button/download-button';
 import { Scroller } from '../scroller/scroller';
 import { SvgIcon } from '../../components/svg-icon/svg-icon';
+import { Loader } from '../loader/loader';
+import { QueryError } from '../query-error/query-error';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
 
+const SPACE_RIGHT = 10;
+const SPACE_LEFT = 10;
+const HEADER_HEIGHT = 38;
+const BODY_PADDING_BOTTOM = 90;
 const ROW_HEIGHT = 30;
 const LIMIT = 100;
 const TIME_COL_WIDTH = 170;
 const BOOLEAN_COL_WIDTH = 50;
 const NUMBER_COL_WIDTH = 70;
 const DEFAULT_COL_WIDTH = 100;
-const thClassName = "table-header";
-const thText = "title-wrap";
-const tdClassName = "cell";
-const tdText = "cell-value";
-const rowClassName = "row";
 
 export interface RawDataModalProps extends React.Props<any> {
   onClose: Fn;
@@ -141,8 +142,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const attributes = dataset.attributes;
     const timeAttribute: string = dataSource.timeAttribute.name;
     const timeColStyle = { width: TIME_COL_WIDTH };
-    var cols = [ <div className={thClassName} style={timeColStyle} key="time">
-      <span className={thText}>
+    var cols = [ <div className="table-header" style={timeColStyle} key="time">
+      <span className="title-wrap">
         {makeTitle(timeAttribute)}
       </span>
     </div> ];
@@ -154,8 +155,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
       const style = { width };
       const key = name;
       this.attributesWidth = this.attributesWidth.concat(width);
-      cols = cols.concat(<div className={thClassName} style={style} key={i}>
-        <div className={thText}>
+      cols = cols.concat(<div className="table-header" style={style} key={i}>
+        <div className="title-wrap">
           {makeTitle(key)}
         </div>
       </div>);
@@ -176,8 +177,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     var rowY = firstElementToShow * ROW_HEIGHT;
     return rows.map((datum: Datum, i: number) => {
       const colStyle = { width: TIME_COL_WIDTH };
-      var cols = [ <div className={tdClassName} key="time" style={colStyle}>
-        <span className={tdText}>
+      var cols = [ <div className="cell" key="time" style={colStyle}>
+        <span className="cell-value">
           { `${new Date(datum[timeAttribute].toString()).toISOString()}` }
         </span>
       </div> ];
@@ -196,8 +197,8 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
           displayValue = setToString(value);
         }
 
-        cols = cols.concat(<div className={tdClassName} key={key} style={colStyle}>
-          <span className={tdText}>
+        cols = cols.concat(<div className="cell" key={key} style={colStyle}>
+          <span className="cell-value">
             {displayValue}
           </span>
         </div>);
@@ -205,7 +206,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
 
       const rowStyle = { top: rowY };
       rowY += ROW_HEIGHT;
-      return <div className={rowClassName} style={rowStyle} key={i}>{cols}</div>;
+      return <div className="row" style={rowStyle} key={i}>{cols}</div>;
     });
   }
 
@@ -241,11 +242,24 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         width: rowWidth - scrollLeft
       };
     }
+
+    var loader: JSX.Element = null;
+    if (loading) {
+      loader = <Loader/>;
+    }
+
+    var queryError: JSX.Element = null;
+    if (error) {
+      queryError = <QueryError error={error}/>;
+    }
+
     const postRows = <div className="post-body">
+      {queryError}
+      {loader}
       <div className="horizontal-scroll-shadow" style={horizontalScrollShadowStyle}></div>
     </div>;
 
-    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth, bodyHeight);
+    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth, bodyHeight, SPACE_LEFT, HEADER_HEIGHT, SPACE_RIGHT, BODY_PADDING_BOTTOM);
     const scrollContainer = <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
     var downloadButton: JSX.Element = null;
     const showDownload = true;
@@ -254,7 +268,7 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
         type="secondary"
         fileName={this.makeFileName()}
         fileFormat={DownloadButton.defaultFileFormat}
-        dataset={dataset}/>;
+        dataset={dataset} />;
     }
 
     return <Modal

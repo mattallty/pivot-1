@@ -13,8 +13,15 @@ import { SvgIcon } from '../../components/svg-icon/svg-icon';
 import { SegmentBubble } from '../../components/segment-bubble/segment-bubble';
 import { Scroller } from '../../components/scroller/scroller';
 import { SimpleTable, InlineStyle } from '../../components/simple-table/simple-table';
+import { Loader } from '../../components/loader/loader';
+import { QueryError } from '../../components/query-error/query-error';
 
 const ROW_HEIGHT = 30;
+const SPACE_LEFT = 10;
+const HEADER_HEIGHT = 38;
+const SPACE_RIGHT = 10;
+const ROW_PADDING_RIGHT = 50;
+const BODY_PADDING_BOTTOM = 90;
 const SEGMENT_WIDTH = 300;
 const INDENT_WIDTH = 25;
 const MEASURE_WIDTH = 100;
@@ -240,10 +247,10 @@ export class Table extends React.Component<VisualizationProps, TableState> {
     var x = getXFromEvent(e) - rect.left;
     var y = getYFromEvent(e) - rect.top;
 
-    if (x <= SimpleTable.SPACE_LEFT) return { what: 'space-left' };
-    x -= SimpleTable.SPACE_LEFT;
+    if (x <= SPACE_LEFT) return { what: 'space-left' };
+    x -= SPACE_LEFT;
 
-    if (y <= SimpleTable.HEADER_HEIGHT) {
+    if (y <= HEADER_HEIGHT) {
       if (x <= SEGMENT_WIDTH) return { what: 'corner' };
 
       x = x - SEGMENT_WIDTH + scrollLeft;
@@ -253,7 +260,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       return { what: 'header', measure };
     }
 
-    y = y - SimpleTable.HEADER_HEIGHT + scrollTop;
+    y = y - HEADER_HEIGHT + scrollTop;
     var rowIndex = Math.floor(y / ROW_HEIGHT);
     var datum = flatData ? flatData[rowIndex] : null;
     if (!datum) return { what: 'whitespace' };
@@ -423,7 +430,7 @@ export class Table extends React.Component<VisualizationProps, TableState> {
             timezone={essence.timezone}
             clicker={clicker}
             left={stage.x + stage.width / 2}
-            top={stage.y + SimpleTable.HEADER_HEIGHT + rowY - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
+            top={stage.y + HEADER_HEIGHT + rowY - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
             urls={dimensionUrls}
           />;
         }
@@ -432,14 +439,14 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       }
     }
 
-    var rowWidth = measuresArray.length * MEASURE_WIDTH + SimpleTable.ROW_PADDING_RIGHT;
+    var rowWidth = measuresArray.length * MEASURE_WIDTH + ROW_PADDING_RIGHT;
 
     // Extended so that the horizontal lines extend fully
     var rowWidthExtended = rowWidth;
     if (stage) {
       rowWidthExtended = Math.max(
         rowWidthExtended,
-        stage.width - (SimpleTable.SPACE_LEFT + SEGMENT_WIDTH + SimpleTable.SPACE_RIGHT)
+        stage.width - (SPACE_LEFT + SEGMENT_WIDTH + SPACE_RIGHT)
       );
     }
 
@@ -465,14 +472,24 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       verticalScrollShadowStyle = {};
     }
 
-    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth + SEGMENT_WIDTH, bodyHeight);
+    var loader: JSX.Element = null;
+    if (loading) {
+      loader = <Loader/>;
+    }
+
+    var queryError: JSX.Element = null;
+    if (error) {
+      queryError = <QueryError error={error}/>;
+    }
+
+    const scrollerStyle = SimpleTable.getScrollerStyle(rowWidth + SEGMENT_WIDTH, bodyHeight, SPACE_LEFT, HEADER_HEIGHT, SPACE_RIGHT, BODY_PADDING_BOTTOM);
 
     var highlightBubble: JSX.Element = null;
     if (highlighter) {
       highlightBubble = <SegmentBubble
         clicker={clicker}
         left={stage.x + stage.width / 2}
-        top={stage.y + SimpleTable.HEADER_HEIGHT + highlighterStyle.top - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
+        top={stage.y + HEADER_HEIGHT + highlighterStyle.top - scrollTop - HIGHLIGHT_BUBBLE_V_OFFSET}
         openRawDataModal={openRawDataModal}
         urls={dimensionUrls}
       />;
@@ -487,6 +504,8 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       </div>
       <div className="horizontal-scroll-shadow" style={horizontalScrollShadowStyle}></div>
       <div className="vertical-scroll-shadow" style={verticalScrollShadowStyle}></div>
+      {queryError}
+      {loader}
     </div>;
 
     const scrollContainer = <Scroller
