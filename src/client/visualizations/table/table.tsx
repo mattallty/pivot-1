@@ -503,15 +503,6 @@ export class Table extends React.Component<VisualizationProps, TableState> {
       {loader}
     </div>;
 
-    const scrollContainer = <Scroller
-      style={scrollerStyle}
-      ref="base"
-      onScroll={this.onScroll.bind(this)}
-      onMouseLeave={this.onMouseLeave.bind(this)}
-      onMouseMove={this.onMouseMove.bind(this)}
-      onClick={this.onClick.bind(this)}
-    />;
-
     return <div className="table">
       <div className="corner">
         <div className="corner-wrap">{segmentTitle}</div>
@@ -528,9 +519,15 @@ export class Table extends React.Component<VisualizationProps, TableState> {
         rows={rows}
         rowLeftOffset={SEGMENT_WIDTH}
         postRows={postRows}
-        scrollContainer={scrollContainer}
       />
-
+      <Scroller
+        style={scrollerStyle}
+        ref="base"
+        onScroll={this.onScroll.bind(this)}
+        onMouseLeave={this.onMouseLeave.bind(this)}
+        onMouseMove={this.onMouseMove.bind(this)}
+        onClick={this.onClick.bind(this)}
+      />;
       {highlightBubble}
     </div>;
   }

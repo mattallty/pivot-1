@@ -28,7 +28,6 @@ export interface SimpleTableProps extends React.Props<any> {
   dataLength: number;
   rows: JSX.Element[];
   rowWidth: number;
-  scrollContainer: JSX.Element;
   preRows?: JSX.Element;
   rowLeftOffset?: number;
   postRows?: JSX.Element;
@@ -84,7 +83,7 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
   }
 
   render() {
-    var { headerColumns, preRows, rows, postRows, scrollContainer  } = this.props;
+    var { headerColumns, preRows, rows, postRows  } = this.props;
 
     return <div className="simple-table">
       <div className="header-cont">
@@ -96,7 +95,6 @@ export class SimpleTable extends React.Component<SimpleTableProps, SimpleTableSt
       </div>
       { postRows }
       <div className="horizontal-scroll-shadow" style={this.getHorizontalShadowStyle()}></div>
-      { scrollContainer }
     </div>;
   }
 }

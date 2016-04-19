@@ -10,7 +10,7 @@ import { formatTimeRange, DisplayYear } from "../../utils/date/date";
 import { formatLabel } from "../../../common/utils/formatter/formatter";
 import { STRINGS, SEGMENT, SPLIT} from '../../config/constants';
 import { Modal } from '../modal/modal';
-import { Button } from '../button/button';
+import { Button, ButtonType } from '../button/button';
 import { DownloadButton } from '../download-button/download-button';
 import { Scroller } from '../scroller/scroller';
 import { SvgIcon } from '../../components/svg-icon/svg-icon';
@@ -236,13 +236,6 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
     const dataLength = dataset ? dataset.data.length : 0;
     const bodyHeight = dataLength * ROW_HEIGHT;
 
-    var horizontalScrollShadowStyle: InlineStyle = { display: 'none' };
-    if (scrollTop) {
-      horizontalScrollShadowStyle = {
-        width: rowWidth - scrollLeft
-      };
-    }
-
     var loader: JSX.Element = null;
     if (loading) {
       loader = <Loader/>;
@@ -255,18 +248,22 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
 
     const scrollerStyle = {
       width: SPACE_LEFT + rowWidth + SPACE_RIGHT,
-      height: HEADER_HEIGHT + bodyHeight + BODY_PADDING_BOTTOM
+      height: bodyHeight + BODY_PADDING_BOTTOM
     };
 
-    const scrollContainer = <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)}/>;
     var downloadButton: JSX.Element = null;
     const showDownload = true;
     if (showDownload) {
-      downloadButton = <DownloadButton
-        type="secondary"
+      const type: ButtonType = "secondary";
+      if (queryError || loader) {
+        DownloadButton.renderDisabled(type);
+      } else {
+        downloadButton = <DownloadButton
+        type={type}
         fileName={this.makeFileName()}
         fileFormat={DownloadButton.defaultFileFormat}
         dataset={dataset} />;
+      }
     }
 
     return <Modal
@@ -283,13 +280,13 @@ export class RawDataModal extends React.Component<RawDataModalProps, RawDataModa
           headerColumns={headerColumns}
           rowWidth={rowWidth}
           rows={rows}
-          scrollContainer={error ? null : scrollContainer}
           dataLength={dataLength}
         />
+        <Scroller style={scrollerStyle} onScroll={this.onScroll.bind(this)} />;
         {queryError}
         {loader}
         <div className="button-bar">
-          <Button type="primary" className="close" active={!queryError && !loader} onClick={onClose} title={STRINGS.close}/>
+          <Button type="primary" className="close" onClick={onClose} title={STRINGS.close} />
           { downloadButton }
         </div>
       </div>
